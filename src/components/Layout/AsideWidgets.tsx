@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AlertTriangle, Calculator, Repeat } from 'lucide-react';
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts';
 import type { Transaction } from '../../data/mockData';
 import { getCategoryBreakdown, getFinanceSummary } from '../../utils/financeAnalytics';
 
@@ -27,12 +27,14 @@ export const BudgetWidget = ({ transactions }: { transactions: Transaction[] }) 
     Investimentos: 'Investimentos',
   };
 
-  const categories = getCategoryBreakdown(transactions).map((category) => ({
-    name: categoryLabels[category.name],
-    value: category.amount,
-    pct: Math.round(category.budgetPct),
-    color: categoryColors[category.name],
-  })).filter((category) => category.value > 0);
+  const categories = getCategoryBreakdown(transactions)
+    .map((category) => ({
+      name: categoryLabels[category.name],
+      value: category.amount,
+      pct: Math.round(category.budgetPct),
+      color: categoryColors[category.name],
+    }))
+    .filter((category) => category.value > 0);
 
   const currentExpenses = transactions
     .filter((transaction) => transaction.type === 'expense')
@@ -112,19 +114,12 @@ export const BudgetWidget = ({ transactions }: { transactions: Transaction[] }) 
                 paddingAngle={3}
                 stroke="#FFFFFF"
                 strokeWidth={3}
+                isAnimationActive={false}
               >
                 {categories.map((category) => (
                   <Cell key={category.name} fill={category.color} />
                 ))}
               </Pie>
-              <Tooltip
-                formatter={(value) => formatCurrency(Number(value))}
-                contentStyle={{
-                  border: '1px solid #E8C8D9',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 12px rgba(158, 74, 105, 0.1)',
-                }}
-              />
             </PieChart>
           </ResponsiveContainer>
         ) : (

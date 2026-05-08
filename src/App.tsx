@@ -103,14 +103,14 @@ const App: React.FC = () => {
             </div>
 
             <TransactionsList transactions={transactionsList} onDeleteTransaction={deleteTransaction} />
-
-            <footer className="dashboard-footer">© 2026 FinApp · Projeto final Elas+ Tech</footer>
           </section>
 
           <aside className="side-column">
             <BudgetWidget transactions={transactionsList} />
             <PatternInsightsWidget transactions={transactionsList} />
           </aside>
+
+          <footer className="dashboard-footer">© 2026 FinApp · Projeto final Elas+ Tech</footer>
         </div>
       </main>
     </div>
