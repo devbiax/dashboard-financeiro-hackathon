@@ -10,7 +10,7 @@ function Sidebar() {
     <aside className="sidebar">
 
       <div>
-        <h1>App Financeiro</h1>
+        <h1>MOMNEY</h1>
 
         <nav className="menu">
 

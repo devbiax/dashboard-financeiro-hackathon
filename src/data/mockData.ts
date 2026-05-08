@@ -1,17 +1,24 @@
+export interface Transaction {
+  id: number;
+  category: string;
+  type: 'income' | 'expense';
+  amount: number;
+}
+
 export const transactions = [
 
   {
     id: 1,
     category: 'Salário',
     type: 'income',
-    amount: 8500,
+    amount: 8800,
   },
 
   {
     id: 2,
     category: 'Delivery',
     type: 'expense',
-    amount: 320,
+    amount: 163,
   },
 
   {
