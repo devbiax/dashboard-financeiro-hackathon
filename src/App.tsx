@@ -1,5 +1,4 @@
-import React from 'react';
-// @ts-ignore
+import React, { useState } from 'react';
 import './styles/dashboard.css';
 
 import Sidebar from './components/Layout/Sidebar';
@@ -8,21 +7,60 @@ import InsightsGrid from './components/Insights/InsightsGrid';
 import SummaryCard from './components/SummaryCard/SummaryCard';
 import MainChart from './components/Charts/MainChart';
 import TransactionsList from './components/Transactions/TransactionsList';
-import { transactions, Transaction } from './data/mockData';
+import { TransactionForm } from './components/Transactions/TransactionForm';
+import { BudgetWidget, PatternInsightsWidget } from './components/Layout/AsideWidgets';
+import { transactions as initialData, type Transaction } from './data/mockData';
+import { getFinanceSummary, getLastSevenDaysChartData } from './utils/financeAnalytics';
+import { formatFinancialDate, getTodayFinancialDate } from './utils/dateUtils';
+
+const formatCurrency = (value: number) =>
+  value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+const normalizeTransaction = (transaction: Partial<Transaction>): Transaction => {
+  const type = transaction.type === 'income' ? 'income' : 'expense';
+  const fallbackCategory = type === 'income' ? 'Receita' : 'Necessidades';
+  const categoryMap: Record<string, string> = {
+    Salario: 'Receita',
+    Salário: 'Receita',
+    Freelance: 'Receita',
+    Delivery: 'Desejos',
+    Streaming: 'Desejos',
+    Transporte: 'Necessidades',
+  };
+
+  return {
+    id: String(transaction.id || crypto.randomUUID()),
+    description: transaction.description || transaction.category || 'Transação sem descrição',
+    category: categoryMap[transaction.category || ''] || transaction.category || fallbackCategory,
+    type,
+    amount: Number(transaction.amount || 0),
+    date: transaction.date ? formatFinancialDate(transaction.date) : getTodayFinancialDate(),
+  };
+};
 
 const App: React.FC = () => {
-  const income = transactions
-    .filter((item: any) => item.type === 'income')
-    .reduce((acc, item) => acc + item.amount, 0);
+  const [transactionsList, setTransactionsList] = useState<Transaction[]>(() => {
+    const saved = localStorage.getItem('finapp_transactions');
+    const transactions = saved ? JSON.parse(saved) : initialData;
+    const normalized = transactions.map(normalizeTransaction);
+    localStorage.setItem('finapp_transactions', JSON.stringify(normalized));
+    return normalized;
+  });
 
-  const expenses = transactions
-    .filter((item: any) => item.type === 'expense')
-    .reduce((acc, item) => acc + item.amount, 0);
+  const handleAddTransaction = (newTransaction: Transaction) => {
+    const updated = [newTransaction, ...transactionsList];
+    setTransactionsList(updated);
+    localStorage.setItem('finapp_transactions', JSON.stringify(updated));
+  };
 
-  const balance = income - expenses;
+  const deleteTransaction = (id: string) => {
+    const updated = transactionsList.filter((transaction) => transaction.id !== id);
+    setTransactionsList(updated);
+    localStorage.setItem('finapp_transactions', JSON.stringify(updated));
+  };
 
-  // Cálculo da meta com segurança para não dividir por zero
-  const goal = income > 0 ? ((income - expenses) / income) * 100 : 0;
+  const summary = getFinanceSummary(transactionsList);
+  const chartData = getLastSevenDaysChartData(transactionsList);
 
   return (
     <div className="dashboard-layout">
@@ -31,51 +69,52 @@ const App: React.FC = () => {
       <main className="main-content">
         <Header />
 
-        <div className="dashboard-body">
-          
-          <section className="dashboard-main-column">
+        <div className="dashboard-container">
+          <section className="main-column">
             <div className="summary-grid">
+              <SummaryCard title="Saldo total" value={formatCurrency(summary.balance)} />
+              <SummaryCard title="Receitas" value={formatCurrency(summary.income)} variationClass="positive" />
+              <SummaryCard title="Despesas" value={formatCurrency(summary.expenses)} variationClass="negative" />
+              <SummaryCard title="Meta mensal" value={`${summary.savingsRate.toFixed(0)}%`} />
+              <SummaryCard title="Média por gasto" value={formatCurrency(summary.averageExpense)} />
               <SummaryCard
-                title="Saldo Total"
-                value={balance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-              />
-              <SummaryCard
-                title="Receitas"
-                value={income.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                variationClass="positive"
-              />
-              <SummaryCard
-                title="Despesas"
-                value={expenses.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                variationClass="negative"
-              />
-              <SummaryCard
-                title="Meta Mensal"
-                value={`${goal.toFixed(0)}%`}
+                title="Variação semanal"
+                value={`${summary.weeklyVariation.toFixed(0)}%`}
+                variationClass={summary.weeklyVariation <= 0 ? 'positive' : 'negative'}
               />
             </div>
 
-            {goal > 80 && (
+            <TransactionForm onAddTransaction={handleAddTransaction} />
+
+            {summary.savingsRate < 20 && summary.income > 0 && (
               <div className="alert-banner">
                 <div className="alert-content">
-                  <strong>Alerta de Meta:</strong> Você já atingiu {goal.toFixed(0)}% do seu limite mensal. 
-                  Hora de segurar os gastos, Diva!
+                  <strong>Alerta de meta:</strong> seu saldo livre está baixo ({summary.savingsRate.toFixed(0)}%).
+                  Revise os gastos para manter o orçamento saudável.
                 </div>
               </div>
             )}
 
-            <InsightsGrid />
-            <MainChart />
+            <InsightsGrid transactions={transactionsList} />
+
+            <div className="chart-card">
+              <h3 className="chart-title">Entradas e saídas dos últimos 7 dias</h3>
+              <MainChart data={chartData} />
+            </div>
+
+            <TransactionsList transactions={transactionsList} onDeleteTransaction={deleteTransaction} />
+
+            <footer className="dashboard-footer">© 2026 FinApp · Projeto final Elas+ Tech</footer>
           </section>
 
-          <aside className="right-panel">
-            <TransactionsList />
+          <aside className="side-column">
+            <BudgetWidget transactions={transactionsList} />
+            <PatternInsightsWidget transactions={transactionsList} />
           </aside>
-          
         </div>
       </main>
     </div>
   );
-}
+};
 
 export default App;

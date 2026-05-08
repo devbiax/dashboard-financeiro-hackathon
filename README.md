@@ -1,16 +1,49 @@
-# React + Vite
+<h1 align="center" style="font-weight: bold;">Dashboard Financeiro | Hackathon</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <a href="#about">Sobre</a> •
+  <a href="#layout">Layout</a> •
+  <a href="#technologies">Tecnologias</a> •
+  <a href="#run">Como executar</a>
+</p>
 
-Currently, two official plugins are available:
+<p align="center">
+  <b>Aplicação web em React para simular dados financeiros, processar informações de consumo e gerar insights automáticos.</b>
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+<h2 id="layout">🎯 Layout</h2>
 
-## React Compiler
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b0c09419-e91b-4249-aa70-16e144a5ee83" alt="Tela do dashboard financeiro" width="900px">
+</p>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<h2 id="about">💻 Sobre</h2>
 
-## Expanding the ESLint configuration
+Este projeto foi desenvolvido como projeto final do hackathon que encerra o <b>Programa Elas+ Tech</b>, com o objetivo de aplicar conceitos de dados, lógica em JavaScript e frontend React em uma solução funcional.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+A aplicação utiliza uma base simulada em JSON para representar movimentações financeiras pessoais. A partir desses dados, o sistema calcula saldo, receitas, despesas, média de gastos, variação semanal e distribuição por categoria.
+
+O dashboard também permite cadastrar novas transações, visualizar entradas e saídas em gráfico, acompanhar orçamento por categoria e receber alertas automáticos baseados na regra 50-30-20.
+
+> [!WARNING]
+> Os dados financeiros são simulados e utilizados apenas para fins educacionais.
+
+<h2 id="technologies">🛠️ Tecnologias</h2>
+
+- React
+- TypeScript
+- JavaScript
+- HTML
+- CSS
+- Vite
+- Recharts
+- Lucide React
+- JSON local
+- LocalStorage
+
+<h2 id="run">🚀 Como executar</h2>
+
+```bash
+npm install
+npm run dev
+```

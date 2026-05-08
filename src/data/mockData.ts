@@ -1,45 +1,19 @@
+import transactionsJson from './transactions.json';
+
 export interface Transaction {
-  id: number;
+  id: string;
+  description: string;
   category: string;
   type: 'income' | 'expense';
   amount: number;
+  date: string;
 }
 
-export const transactions = [
+export const dataSource = {
+  type: 'JSON local',
+  file: 'src/data/transactions.json',
+  description:
+    'Base simulada para um dashboard financeiro pessoal, criada com receitas, despesas, categorias e datas para demonstrar o fluxo de dados do hackathon.',
+};
 
-  {
-    id: 1,
-    category: 'Salário',
-    type: 'income',
-    amount: 8800,
-  },
-
-  {
-    id: 2,
-    category: 'Delivery',
-    type: 'expense',
-    amount: 163,
-  },
-
-  {
-    id: 3,
-    category: 'Transporte',
-    type: 'expense',
-    amount: 450,
-  },
-
-  {
-    id: 4,
-    category: 'Streaming',
-    type: 'expense',
-    amount: 89,
-  },
-
-  {
-    id: 5,
-    category: 'Freelance',
-    type: 'income',
-    amount: 1200,
-  },
-
-]
+export const transactions = transactionsJson as Transaction[];

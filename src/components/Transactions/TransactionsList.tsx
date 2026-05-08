@@ -1,46 +1,83 @@
-import React from 'react';
-import { transactions } from '../../data/mockData'; 
+import React from "react";
+import { Trash2 } from "lucide-react";
+import type { Transaction } from "../../data/mockData";
+import { formatFinancialDate, parseFinancialDate } from "../../utils/dateUtils";
 
-const TransactionsList: React.FC = () => {
+interface TransactionsListProps {
+  transactions: Transaction[];
+  onDeleteTransaction: (id: string) => void;
+}
+
+const TransactionsList: React.FC<TransactionsListProps> = ({
+  transactions,
+  onDeleteTransaction,
+}) => {
+  const sortedTransactions = [...transactions]
+    .sort((current, previous) => {
+      return (
+        parseFinancialDate(previous.date).getTime() -
+        parseFinancialDate(current.date).getTime()
+      );
+    })
+    .slice(0, 10);
+
   return (
     <div className="transactions-container">
-      <h3 style={{ marginBottom: '16px', fontSize: '18px', color: '#1A1D21' }}>
-        Transações de Diva
-      </h3>
-      
-      <table className="transactions-table">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Valor</th>
-            <th>Categoria</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions && transactions.length > 0 ? (
-            transactions.map((t: any) => (
-              <tr key={t.id}>
-                <td>{t.date}</td>
-                <td className={`amount ${t.type}`}>
-                  {t.amount.toLocaleString('pt-BR', { 
-                    style: 'currency', 
-                    currency: 'BRL' 
-                  })}
-                </td>
-                <td>
-                  <span className="tag-category">{t.category}</span>
-                </td>
-              </tr>
-            ))
-          ) : (
+      <h3 className="transactions-title">Transações mais recentes</h3>
+
+      <div className="transactions-table-wrapper">
+        <table className="transactions-table">
+          <thead>
             <tr>
-              <td colSpan={3} style={{ textAlign: 'center', padding: '20px' }}>
-                Nenhuma transação encontrada.
-              </td>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Valor</th>
+              <th>Categoria</th>
+              <th>Ações</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {sortedTransactions.length > 0 ? (
+              sortedTransactions.map((transaction) => (
+                <tr key={transaction.id}>
+                  <td data-label="Data">
+                    {formatFinancialDate(transaction.date)}
+                  </td>
+                  <td data-label="Descrição">
+                    {transaction.description || "--"}
+                  </td>
+                  <td
+                    data-label="Valor"
+                    className={`amount ${transaction.type}`}
+                  >
+                    {transaction.amount.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    })}
+                  </td>
+                  <td data-label="Categoria">
+                    <span className="tag-category">{transaction.category}</span>
+                  </td>
+                  <td data-label="Ações">
+                    <button
+                      onClick={() => onDeleteTransaction(transaction.id)}
+                      className="btn-delete"
+                      title="Excluir"
+                      aria-label="Excluir transação"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr className="empty-row">
+                <td colSpan={5}>Nenhuma transação encontrada.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

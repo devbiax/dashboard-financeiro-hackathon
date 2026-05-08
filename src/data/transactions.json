@@ -1,0 +1,66 @@
+[
+  {
+    "id": "tx-001",
+    "description": "Salário mensal",
+    "category": "Receita",
+    "type": "income",
+    "amount": 2200,
+    "date": "01/05/2026"
+  },
+  {
+    "id": "tx-002",
+    "description": "Projeto freelance",
+    "category": "Receita",
+    "type": "income",
+    "amount": 300,
+    "date": "03/05/2026"
+  },
+  {
+    "id": "tx-003",
+    "description": "Aluguel",
+    "category": "Necessidades",
+    "type": "expense",
+    "amount": 700,
+    "date": "02/05/2026"
+  },
+  {
+    "id": "tx-004",
+    "description": "Mercado",
+    "category": "Necessidades",
+    "type": "expense",
+    "amount": 280,
+    "date": "04/05/2026"
+  },
+  {
+    "id": "tx-005",
+    "description": "Transporte",
+    "category": "Necessidades",
+    "type": "expense",
+    "amount": 120,
+    "date": "05/05/2026"
+  },
+  {
+    "id": "tx-006",
+    "description": "Delivery",
+    "category": "Desejos",
+    "type": "expense",
+    "amount": 90,
+    "date": "06/05/2026"
+  },
+  {
+    "id": "tx-007",
+    "description": "Streaming",
+    "category": "Desejos",
+    "type": "expense",
+    "amount": 40,
+    "date": "07/05/2026"
+  },
+  {
+    "id": "tx-008",
+    "description": "Aporte mensal",
+    "category": "Investimentos",
+    "type": "expense",
+    "amount": 550,
+    "date": "08/05/2026"
+  }
+]
